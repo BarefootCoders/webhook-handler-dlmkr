@@ -1,0 +1,46 @@
+<link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css">
+<script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
+
+<!-- This is necessary to handle list selection click event - DG CX does not provide a mechanism by which to pass in event parameters.
+Relevant links: 
+  - https://cloud.google.com/dialogflow/cx/docs/concept/integration/dialogflow-messenger/javascript-events#df-list-element-clicked
+  - https://www.youtube.com/watch?v=xD0f8EYdqHI -->
+<script>
+  document.addEventListener('df-list-element-clicked', (event) => {
+    event.preventDefault(); // prevent dfMessenger from submitting event as defined in richContent
+    const userInput = event.detail.event; // grab event name
+    console.log('userInput', userInput);
+
+    const deal_id = userInput.split("_").pop(); // expects event name have trailing deal_id, ex. deal_selected_13
+
+    const metadata ={ 
+      "parameters": {
+        "deal_id": deal_id
+      }
+    };
+
+    
+    const dfMessenger = document.querySelector('df-messenger');
+    dfMessenger.setQueryParameters(metadata); // set session params for current query
+    dfMessenger.sendRequest('event', 'deal_selected');
+  });
+</script>
+
+<df-messenger
+  project-id="dm-jonny-cash-barefoot"
+  agent-id="5b39ef81-1b3d-4e11-9786-aafad7ed74a7"
+  language-code="en"
+  max-query-length="-1"
+  allow-feedback="all">
+  <df-messenger-chat-bubble
+   chat-title="Jonny Cash">
+  </df-messenger-chat-bubble>
+</df-messenger>
+<style>
+  df-messenger {
+    z-index: 999;
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+  }
+</style>

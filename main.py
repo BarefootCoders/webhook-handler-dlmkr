@@ -21,17 +21,17 @@ def list_deals():
 
   return jsonify(
      {
-            'fulfillment_response': {
-                'messages': [
-                  { 
-                    "payload": {
-                        "richContent": [
-                          rich_content
-                        ]
-                    },
-                  }
+       'fulfillment_response': {
+          'messages': [
+            {
+              "payload": {
+                "richContent": [
+                  rich_content
                 ]
+              },
             }
+          ]
+        }
      }
   )
 
