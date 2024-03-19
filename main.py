@@ -16,7 +16,7 @@ def list_deals():
   req_data = request.get_json()
   print(json.dumps(req_data))
 
-  deals = mock_item_list()
+  deals = mock_deals_list()
   rich_content = [list_item_from_deal(deal) for deal in deals["items"]]
 
   return jsonify(
@@ -46,21 +46,22 @@ def show_deal():
   deal_id = req_data["sessionInfo"]["parameters"]["deal_id"]
   print(deal_id)
 
-  deal = mock_item();
+  deal = mock_deal(deal_id);
 
   return jsonify({
     'fulfillment_response': {
       'messages': [
         { 
           "payload": {
-              "richContent": [[
+            "richContent": [
+              [
                 {
                   "type": "info",
                   "title":deal["title"],
                   "subtitle": deal["state"]
                 }
               ]
-              ]
+            ]
           },
         }
       ]
@@ -76,7 +77,7 @@ def list_item_from_deal(deal):
     }
   }
 
-def mock_item_list():
+def mock_deals_list():
   return {
     "items": [
       {
@@ -112,5 +113,10 @@ def mock_item_list():
     ]
   }
 
-def mock_item():
-  return mock_item_list()["items"][0]
+def mock_deal(id: None):
+  deal = None
+  if id:
+    deals = mock_deals_list()
+    deal = next((deal for deal in deals["items"] if deal["id"] == int(id)), None)
+  
+  return deal if deal else mock_deals_list()["items"][0]
